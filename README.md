@@ -1,53 +1,43 @@
 This project has been created as part of the 42 curriculum by bfernan2.
 
-Description
+General Description
+The subject describes the problem as follows:
 
-Philosophers is a project from the 42 School curriculum based on the classic Dining Philosophers Problem, originally formulated by Edsger Dijkstra in 1965. It serves as an introduction to concurrent programming, focusing on the challenges of thread synchronization and shared resource management.
+One or more philosophers sit at a round table.
+There is a large bowl of spaghetti in the middle of the table.
+The spaghetti can only be eaten with two forks.
+There are only as many forks as there are philosophers.
+Each philosopher successively eats, sleeps and thinks.
+If a philosopher hasn't eaten in a certain timeframe, he will die of starvation.
+Philosophers cannot communicate with each other.
+In both the mandatory and bonus parts, we must create an algorithm that keeps the philosophers alive as far as possible. The programs must take several parameters:
 
-The simulation places a given number of philosophers around a round table. Each philosopher alternates between three states: thinking, eating, and sleeping. To eat, a philosopher must pick up both forks adjacent to them — one on the left and one on the right. Since forks are shared between neighbors, the program must carefully manage access to avoid deadlocks, data races, and starvation.
+number_of_philosophers: the number of philosophers around the table,
+time_to_die: a number representing the time in milliseconds a philosopher has to live after a meal. If a philosopher hasn’t started eating time_to_die milliseconds after the beginning of his last meal or the beginning of the simulation, he will die.
+time_to_eat: a number representing the time in milliseconds a philosopher takes to finish his meal. During that time, the philosopher keeps his two forks in hand.
+time_to_sleep: the time in milliseconds that a philosopher spends sleeping.
+number_of_times_each_philosopher_must_eat: an optional argument that allows the program to stop if all the philosophers have eaten at least that many times. If this argument is not specified, the simulation carries on unless a philosopher dies.
+The programs outputs a message each time a philosopher takes an action, which is formatted this way:
 
-The simulation ends when a philosopher dies of starvation, or when all philosophers have eaten a specified number of times.
+[timestamp_in_ms] [X] has taken a fork
+[timestamp_in_ms] [X] is eating
+[timestamp_in_ms] [X] is sleeping
+[timestamp_in_ms] [X] is thinking
+[timestamp_in_ms] [X] died
+Mandatory Part - Threads and Mutexes
+In the mandatory part, each philosopher is a thread and each fork is protected by a mutex. There is exactly one fork between each philosopher and a philosopher must take the forks to his immediate left and right in order to eat.
 
-This project is implemented in C using POSIX threads (pthreads) and mutexes for synchronization.
+Usage
+Git clone the project and for the mandatory part:
 
+cd philosophers/philo
+To compile, use make or:
 
-Instructions
+make BUILD=pretty
+Run the program with the following arguments:
 
-Compilation
+./philo <number_of_philosophers> <time_to_die> <time_to_eat> <time_to_sleep> [number_of_times_each_philo_must_eat]
+The arguments must be integers between 0 and INT_MAX representing a time in milliseconds. For example:
 
-bashmake        # Build the executable
-make re     # Clean and rebuild from scratch
-make clean  # Remove object files
-make fclean # Remove object files and executable
-
-Execution
-
-bash./philo <number_of_philosophers> <time_to_die> <time_to_eat> <time_to_sleep> [number_of_times_each_philosopher_must_eat]
-
-ArgumentTypeDescriptionnumber_of_philosophersRequiredNumber of philosophers and forks at the tabletime_to_dieRequiredTime in milliseconds before a philosopher dies without eatingtime_to_eatRequiredTime in milliseconds a philosopher takes to eattime_to_sleepRequiredTime in milliseconds a philosopher takes to sleepnumber_of_times_each_philosopher_must_eatOptionalIf set, the simulation stops once all philosophers have eaten this many times
-
-Examples
-
-bash# No philosopher should die
-./philo 5 800 200 200
-
-# One philosopher — will die (cannot grab two forks alone)
-./philo 1 800 200 200
-
-# Stops after each philosopher has eaten 7 times
-./philo 5 800 200 200 7
-
-# A philosopher should die
-./philo 4 310 200 100
-
-
-Resources
-
-Documentation & References
-
-
-Dining Philosophers Problem — Wikipedia
-POSIX Threads Programming — Lawrence Livermore National Laboratory
-pthread_mutex_lock — Linux man page
-pthread_create — Linux man page
-Race Conditions and Mutexes — GeeksforGeeks
+/philo 4 800 200 200 5
+If the arguments are valid, the program will output the actions of each philosopher until one of them dies or until all of them have eaten number_of_times_each_philo_must_eat, if specified.
