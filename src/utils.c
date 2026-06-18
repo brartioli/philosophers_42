@@ -1,0 +1,99 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bfernan2 <bfernan2@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/18 17:18:47 by bfernan2          #+#    #+#             */
+/*   Updated: 2026/06/18 17:20:07 by bfernan2         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philosophers.h"
+
+static int	is_valid_number(char *str)
+{
+	int	i;
+
+	if (!str || str[0] == '\0')
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static long	ft_atol(char *str)
+{
+	long	res;
+	int		i;
+
+	res = 0;
+	i = 0;
+	while (str[i])
+	{
+		res = res * 10 + (str[i] - '0');
+		i++;
+	}
+	return (res);
+}
+
+static long	validate_and_convert(char *arg)
+{
+	long	num;
+
+	if (!is_valid_number(arg))
+		return (-1);
+	num = ft_atol(arg);
+	if (num <= 0 || num > INT_MAX)
+		return (-1);
+	return (num);
+}
+
+static int	parse_required_args(char **argv, t_data *data)
+{
+	long	temp;
+
+	temp = validate_and_convert(argv[1]);
+	if (temp == -1)
+		return (-1);
+	data->nb_philos = (int)temp;
+	temp = validate_and_convert(argv[2]);
+	if (temp == -1)
+		return (-1);
+	data->time_die = temp;
+	temp = validate_and_convert(argv[3]);
+	if (temp == -1)
+		return (-1);
+	data->time_eat = temp;
+	temp = validate_and_convert(argv[4]);
+	if (temp == -1)
+		return (-1);
+	data->time_sleep = temp;
+	return (0);
+}
+
+int	parse_arguments(int argc, char **argv, t_data *data)
+{
+	long	temp;
+
+	if (argc != 5 && argc != 6)
+		return (-1);
+	if (parse_required_args(argv, data) == -1)
+		return (-1);
+	if (argc == 6)
+	{
+		temp = validate_and_convert(argv[5]);
+		if (temp == -1)
+			return (-1);
+		data->nb_meals = (int)temp;
+	}
+	else
+		data->nb_meals = -1;
+	return (0);
+}
